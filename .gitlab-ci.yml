@@ -38,7 +38,7 @@ jobs:
     - task: Maven@3
       condition: or(and(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.Reason'], 'IndividualCI')), eq(variables['Build.Reason'], 'Manual'))
       inputs:
-        mavenPomFile: '$(System.DefaultWorkingDirectory)/$(APP_NAME)/pom.xml'
+        mavenPomFile: 'pom.xml'
         mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
         mavenAuthenticateFeed: false
         javaHomeOption: 'JDKVersion'
