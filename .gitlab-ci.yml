@@ -1,0 +1,57 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+      - develop
+      - main
+
+parameters:
+- name: profileName
+  type: string
+  values:
+  - dev
+  - stg
+  - prd
+  default: dev
+
+variables:
+  # 変数グループの参照
+  - group: MuleVariable
+  # ENVの指定
+  - name: ENV
+    ${{ if startswith(parameters.profileName, 'dev') }}:
+      value: 'dev'
+    ${{ elseif startswith(parameters.profileName, 'stg') }}:
+      value: 'stg'
+    ${{ elseif startswith(parameters.profileName, 'prd') }}:
+      value: 'prd'
+
+jobs:
+- job: 'test'
+  displayName: 'MUnit test'
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+    - checkout: self
+    - task: Maven@3
+      condition: or(and(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.Reason'], 'IndividualCI')), eq(variables['Build.Reason'], 'Manual'))
+      inputs:
+        mavenPomFile: '$(System.DefaultWorkingDirectory)/$(APP_NAME)/pom.xml'
+        mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+        mavenAuthenticateFeed: false
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '17'
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        goals: 'test
+            -Denv=$(ENV)
+            -Dconnected.app.client.id=$(CONNECTED_APP_CLIENT_ID)
+            -Dconnected.app.client.secret=$(CONNECTED_APP_CLIENT_SECRET)
+            -Denterprise.username=$(ENTERPRISE_USERNAME) 
+            -Denterprise.password=$(ENTERPRISE_PASSWORD)
+            -s settings.xml 
+            --batch-mode --update-snapshots verify'
+
