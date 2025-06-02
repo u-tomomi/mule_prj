@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="mule_prj-test-suite.xml" />
+	<munit:test name="mule_prj-test-suite-mule_prjFlowTest" doc:id="cbe9fe16-0e21-47c8-8462-5d427dad8806" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to mule_prjFlow" doc:id="037bca3f-878b-4637-be05-5c9abb262dc9" name="mule_prjFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="43a7637b-beba-4f80-b6cd-184c5b7d8975" actual="#[true]" expected="#[true]"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
