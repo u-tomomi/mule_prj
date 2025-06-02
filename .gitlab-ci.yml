@@ -29,7 +29,7 @@ variables:
 
 jobs:
 - job: 'test'
-  displayName: 'MUnit test'
+  displayName: 'MUnit test2'
   pool:
     vmImage: 'ubuntu-latest'
 
@@ -39,7 +39,6 @@ jobs:
       condition: or(and(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.Reason'], 'IndividualCI')), eq(variables['Build.Reason'], 'Manual'))
       inputs:
         mavenPomFile: 'pom.xml'
-        mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
         mavenAuthenticateFeed: false
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '17'
