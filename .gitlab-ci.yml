@@ -36,7 +36,7 @@ jobs:
   steps:
     - checkout: self
     - task: Maven@3
-      condition: or(and(eq(variables['Build.SourceBranchName'], 'main'), eq(variables['Build.Reason'], 'IndividualCI')))
+      condition: and(eq(variables['Build.SourceBranchName'], 'main'), eq(variables['Build.Reason'], 'IndividualCI'))
       inputs:
         mavenPomFile: 'pom.xml'
         mavenAuthenticateFeed: false
