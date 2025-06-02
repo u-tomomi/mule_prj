@@ -104,6 +104,6 @@ jobs:
             -Denterprise.password=$(ENTERPRISE_PASSWORD)
             -DskipTests 
             -s settings.xml 
-            --batch-mode --update-snapshots verify'
-            -DmuleDeploy
+            --batch-mode --update-snapshots verify
+            -DmuleDeploy'
 
