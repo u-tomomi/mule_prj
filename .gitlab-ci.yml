@@ -29,14 +29,14 @@ variables:
 
 jobs:
 - job: 'test'
-  displayName: 'MUnit test2'
+  displayName: 'test'
   pool:
     vmImage: 'ubuntu-latest'
 
   steps:
     - checkout: self
     - task: Maven@3
-      condition: and(eq(variables['Build.SourceBranchName'], 'main'), eq(variables['Build.Reason'], 'IndividualCI'))
+      condition: or(and(eq(variables['Build.SourceBranchName'], 'main'), eq(variables['Build.Reason'], 'IndividualCI')))
       inputs:
         mavenPomFile: 'pom.xml'
         mavenAuthenticateFeed: false
@@ -54,7 +54,7 @@ jobs:
             -s settings.xml 
             --batch-mode --update-snapshots verify'
 - job: 'regist_exchange'
-  displayName: 'MUnit test2'
+  displayName: 'regist_exchange'
   pool:
     vmImage: 'ubuntu-latest'
 
@@ -80,7 +80,7 @@ jobs:
             -s settings.xml 
             --batch-mode --update-snapshots verify'
 - job: 'deploy'
-  displayName: 'MUnit test2'
+  displayName: 'deploy'
   pool:
     vmImage: 'ubuntu-latest'
 
