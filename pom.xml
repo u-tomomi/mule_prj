@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mycompany</groupId>
+	<groupId>b9a0ca55-475a-49de-bdd5-cde55317102f</groupId>
 	<artifactId>mule_prj</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
@@ -16,6 +16,11 @@
 		<app.runtime>4.9.2</app.runtime>
 		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
 		<munit.version>3.4.0</munit.version>
+        <java.version>17</java.version>
+        <mule.java.version>17</mule.java.version>
+        <mule.release.channel>LTS</mule.release.channel>
+        <mule.runtime.version>4.9</mule.runtime.version>
+        <application.name>${project.name}</application.name>
 	</properties>
 
 	<build>
@@ -25,12 +30,44 @@
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.2.0</version>
 			</plugin>
-			<plugin>
-				<groupId>org.mule.tools.maven</groupId>
-				<artifactId>mule-maven-plugin</artifactId>
-				<version>${mule.maven.plugin.version}</version>
-				<extensions>true</extensions>
-			</plugin>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <cloudhub2Deployment>
+                        <provider>MC</provider>
+                        <businessGroupId>${project.groupId}</businessGroupId>
+                        <environment>${environment.name}</environment>
+                        <server>anypoint-exchange-v3</server>
+                        <muleVersion>${mule.runtime.version}</muleVersion>
+                        <javaVersion>${mule.java.version}</javaVersion>
+                        <releaseChannel>${mule.release.channel}</releaseChannel>
+                        <applicationName>${prefix}${application.name}</applicationName>
+                        <target>${target}</target>
+                        <replicas>${replicas}</replicas>
+                        <vCores>${vCores}</vCores>
+                        <deploymentSettings>
+                            <generateDefaultPublicUrl>${generate.public.url}</generateDefaultPublicUrl>
+                        </deploymentSettings>
+                        <integrations>
+                            <services>
+                                <objectStoreV2>
+                                    <enabled>true</enabled>
+                                </objectStoreV2>
+                            </services>
+                        </integrations>
+                        <properties>
+                            <cloudwatch.loggroup>${prefix}mule-app</cloudwatch.loggroup>
+                            <cloudwatch.logstream>${application.name}</cloudwatch.logstream>
+                            <cloudwatch.region>ap-northeast-1</cloudwatch.region>
+                            <env>${env}</env>
+                        </properties>
+                    </cloudhub2Deployment>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>com.mulesoft.munit.tools</groupId>
 				<artifactId>munit-maven-plugin</artifactId>
@@ -92,31 +129,86 @@
 		</dependency>
 	</dependencies>
 
-	<repositories>
-		<repository>
-			<id>anypoint-exchange-v3</id>
-			<name>Anypoint Exchange</name>
-			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>mulesoft-releases</id>
-			<name>MuleSoft Releases Repository</name>
-			<url>https://repository.mulesoft.org/releases/</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>mulesoft-releases</id>
-			<name>MuleSoft Releases Repository</name>
-			<layout>default</layout>
-			<url>https://repository.mulesoft.org/releases/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+    <repositories>
+        <repository>
+            <id>anypoint-exchange-v3</id>
+            <name>Anypoint Exchange</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>MuleRepository</id>
+            <name>MuleRepository</name>
+            <url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>MuleRepository</id>
+            <name>MuleRepository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+    <distributionManagement>
+        <repository>
+            <id>anypoint-exchange-v3</id>
+            <name>Exchange Private Repository</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <generate.public.url>true</generate.public.url>
+                <replicas>1</replicas>
+                <vCores>0.1</vCores>
+            </properties>
+        </profile>
+        <profile>
+            <id>stg</id>
+            <properties>
+                <generate.public.url>false</generate.public.url>
+                <replicas>2</replicas>
+                <vCores>0.1</vCores>
+            </properties>
+        </profile>
+        <profile>
+            <id>prd</id>
+            <properties>
+                <generate.public.url>false</generate.public.url>
+                <replicas>2</replicas>
+                <vCores>0.1</vCores>
+            </properties>
+        </profile>
+    </profiles>
 </project>
