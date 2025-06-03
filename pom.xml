@@ -4,7 +4,7 @@
 
 	<groupId>b9a0ca55-475a-49de-bdd5-cde55317102f</groupId>
 	<artifactId>mule-prj</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
 	<name>mule-prj</name>
@@ -44,7 +44,7 @@
                         <muleVersion>${mule.runtime.version}</muleVersion>
                         <javaVersion>${mule.java.version}</javaVersion>
                         <releaseChannel>${mule.release.channel}</releaseChannel>
-                        <applicationName>${prefix}$${application.name}</applicationName>
+                        <applicationName>${prefix}${application.name}</applicationName>
                         <target>${target}</target>
                         <replicas>${replicas}</replicas>
                         <vCores>${vCores}</vCores>
